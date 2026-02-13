@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Valentine Game 💌</title>
+<style>
+body{
+ margin:0;
+ height:100vh;
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ font-family:"Segoe UI",sans-serif;
+ background:#d9c7ff; /* lavender night */
+ overflow:hidden;
+ position:relative;
+}
+
+/* stars background */
+.star{
+ position:fixed;
+ font-size:12px;
+ color:white;
+ opacity:0.8;
+ animation:twinkle linear infinite;
+}
+@keyframes twinkle{
+ 0%,100%{opacity:0.3;}
+ 50%{opacity:1;}
+}
+
+/* floating emojis */
+.float{
+ position:fixed;
+ font-size:22px;
+ animation:float 6s linear infinite;
+ opacity:.5;
+}
+@keyframes float{
+ from{transform:translateY(100vh);}
+ to{transform:translateY(-10vh);}
+}
+
+/* card */
+.card{
+ background:white;
+ padding:30px;
+ border-radius:20px;
+ width:300px;
+ text-align:center;
+ box-shadow:0 10px 25px rgba(0,0,0,.15);
+ display:none;
+}
+.show{display:block;}
+
+h2{
+ color:#6c4cff;
+ min-height:60px;
+}
+
+/* buttons */
+button{
+ padding:10px 22px;
+ margin:10px;
+ border:none;
+ border-radius:12px;
+ background:#bca8ff;
+ color:white;
+ font-size:15px;
+ cursor:pointer;
+}
+
+/* envelope */
+.envelope{
+ font-size:45px;
+ cursor:pointer;
+}
+
+/* final letter style */
+#finalText{
+ font-size:15px;
+ color:#333;
+ line-height:1.5;
+ text-shadow: 0 0 4px #fff;
+ white-space: pre-wrap; /* preserve spacing naturally */
+}
+</style>
+</head>
+<body>
+
+<!-- generate sparkling stars -->
+<script>
+for(let i=0;i<30;i++){
+ let s=document.createElement("div");
+ s.className="star";
+ s.innerHTML="✦";
+ s.style.top=Math.random()*100+"vh";
+ s.style.left=Math.random()*100+"vw";
+ s.style.animationDuration=(2+Math.random()*3)+"s";
+ document.body.appendChild(s);
+}
+</script>
+
+<!-- PAGE 1 -->
+<div class="card show" id="p1">
+<h2 id="text1"></h2>
+<button onclick="next(2)">Yes</button>
+<button id="no1">No</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="card" id="p2">
+<h2 id="text2"></h2>
+<button onclick="next(3)">Yes</button>
+<button id="no2">No</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="card" id="p3">
+<h2 id="text3"></h2>
+<button onclick="next(4)">Yes</button>
+<button id="no3">No</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="card" id="p4">
+<div class="envelope" onclick="openLetter()">💌</div>
+<p>Tap the letter</p>
+</div>
+
+<!-- FINAL PAGE -->
+<div class="card" id="p5">
+<p id="finalText"></p>
+</div>
+
+<script>
+/* typing function */
+function typeText(el,text,i=0){
+ if(i<text.length){
+   el.innerHTML+=text.charAt(i);
+   setTimeout(()=>typeText(el,text,i+1),35);
+ }
+}
+
+/* questions typing */
+typeText(document.getElementById("text1"),"Are you Mad!? 🫣");
+typeText(document.getElementById("text2"),"Do you Love Uma? 😚");
+typeText(document.getElementById("text3"),'Will you be "My Valentine" 🖇️?');
+
+/* page navigation */
+function next(n){
+ document.querySelectorAll('.card').forEach(c=>c.classList.remove('show'));
+ document.getElementById('p'+n).classList.add('show');
+
+ if(n==2 || n==3) heartsStars(); // hearts only on pages 2 & 3
+}
+
+/* runaway No buttons */
+function run(id){
+ let b=document.getElementById(id);
+ b.onmouseover=()=>{
+   b.style.transform=`translate(${Math.random()*200-100}px,${Math.random()*120-60}px)`;
+ };
+}
+run("no1");
+run("no2");
+run("no3");
+
+/* laughing emojis on first page ONLY */
+for(let i=0;i<10;i++){
+ let e=document.createElement("div");
+ e.className="float";
+ e.innerHTML="😂";
+ e.style.left=Math.random()*100+"vw";
+ e.style.animationDuration=(4+Math.random()*4)+"s";
+ e.dataset.page="p1"; // mark for removal
+ document.body.appendChild(e);
+}
+
+// remove laughing emojis when leaving page 1
+function removeLaughs(){
+ let laughs = document.querySelectorAll('.float[data-page="p1"]');
+ laughs.forEach(l=>l.remove());
+}
+
+// floating hearts and moon for page 2 & 3
+function heartsStars(){
+ removeLaughs();
+ for(let i=0;i<15;i++){
+   let h=document.createElement("div");
+   h.className="float";
+   h.innerHTML="💗";
+   h.style.left=Math.random()*100+"vw";
+   h.style.animationDuration=(4+Math.random()*4)+"s";
+   document.body.appendChild(h);
+ }
+ for(let i=0;i<10;i++){
+   let s=document.createElement("div");
+   s.className="float";
+   s.innerHTML="✦";
+   s.style.left=Math.random()*100+"vw";
+   s.style.animationDuration=(6+Math.random()*6)+"s";
+   document.body.appendChild(s);
+ }
+ let m=document.createElement("div");
+ m.className="float";
+ m.innerHTML="🌙";
+ m.style.left="80vw";
+ m.style.animationDuration="10s";
+ document.body.appendChild(m);
+}
+
+/* open letter */
+function openLetter(){
+ next(5);
+ const msg=`Hello Moonpie 🌙,
+You are my Valentine now! Yet to spend days, months and years with you💗.
+Wishing you to be with me forever 🖇️.
+Let's fight and fix but never leave alone and go away ✨.
+I am always yours😚.
+
+Luv u so much💗🫂🌙,
+Luv u to the Moon and back!`;
+ typeText(document.getElementById("finalText"), msg);
+ confetti();
+}
+
+/* confetti hearts */
+function confetti(){
+ for(let i=0;i<30;i++){
+   let c=document.createElement("div");
+   c.className="float";
+   c.innerHTML="💗";
+   c.style.left=Math.random()*100+"vw";
+   c.style.animationDuration=(2+Math.random()*2)+"s";
+   document.body.appendChild(c);
+ }
+}
+</script>
+</body>
+</html>
